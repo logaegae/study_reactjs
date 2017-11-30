@@ -1,10 +1,14 @@
 import React from 'react';
 import ContactInfo from './ContactInfo';
+import ContactDetail from './ContactDetail';
+import ContactCreate from './ContactCreate';
+import update from 'react-addons-update';
 
 class Contact extends React.Component {
     constructor(props){
         super(props);
         this.state = {
+            selectedKey : -1,
             keyword : '',
             contactData: [{
                 name : 'Albert',
@@ -25,11 +29,58 @@ class Contact extends React.Component {
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleCreate = this.handleCreate.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
     }
 
     handleChange(e){
         this.setState({
             keyword : e.target.value
+        });
+    }
+
+    handleClick(key){
+        this.setState({
+            selectedKey : key
+        });
+    }
+
+    handleCreate(contact){
+        this.setState({
+            contactData : update(
+                this.state.contactData,
+                {
+                    $push : [contact]
+                }
+            )
+        });
+    }
+
+    handleRemove(){
+        this.setState({
+            contactData : update(
+                this.state.contactData,
+                {
+                    $splice : [[this.state.selectedKey,1]]
+                }
+            ),
+            selectedKey : -1
+        });
+    }
+
+    handleEdit(name, phone){
+        this.setState({
+            contactData : update(
+                this.state.contactData,
+                {
+                    [this.state.selectedKey] : {
+                        name : { $set : name },
+                        phone : { $set : phone }
+                    }
+                }
+            )
         });
     }
 
@@ -40,12 +91,14 @@ class Contact extends React.Component {
                 return contact.name.toLowerCase().indexOf(this.state.keyword.toLowerCase()) > -1;
             });
             return data.map((v,i) => {
-                return (<ContactInfo contact={v} key={i} index={i+1}/>);
+                return (<ContactInfo contact={v} key={i} index={i+1} onClick={() => this.handleClick(i)} />);
             });
         };
         return(
             <div>
-                <h2 className="text-center">contact</h2>
+                <h1 className="text-center">contact</h1>
+                <hr/>
+                <h2>List</h2>
                 <input className="pull-right" type="text" placeholder="Search..." name="keyword" value={this.state.value} onChange={this.handleChange}/>
                 <table className="table table-striped">
                     <thead>
@@ -55,9 +108,13 @@ class Contact extends React.Component {
                             <th>phone</th>
                         </tr>
                     </thead>
-                    <tbody>{mapToComponents(this.state.contactData)}</tbody>
+                    <tbody>{mapToComponents(this.state.contactData) }</tbody>
                 </table>
-                {this.state.keyword}
+                <hr/>
+                <h2>Detail</h2>
+                <ContactDetail isSelected={this.state.selectedKey != -1} contact={this.state.contactData[this.state.selectedKey]} onRemove={this.handleRemove} onEdit={this.handleEdit}/>
+                <ContactCreate onCreate={this.handleCreate} />
+                <br/>
             </div>
         );
     }

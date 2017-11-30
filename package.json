@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-      "test": "echo Server Running...",
-      "start": "webpack-dev-server --hot --host 0.0.0.0"
+    "test": "echo Server Running...",
+    "start": "webpack-dev-server --hot --host 0.0.0.0"
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/logaegae/study_reactjs#readme",
   "dependencies": {
+    "babel-preset-stage-0": "^6.24.1",
     "react": "^16.1.1",
+    "react-addons-update": "^15.6.2",
     "react-dom": "^16.1.1"
   },
   "devDependencies": {
