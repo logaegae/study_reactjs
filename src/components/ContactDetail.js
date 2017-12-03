@@ -12,6 +12,7 @@ class ContactDetail extends React.Component{
         this.handleToggle = this.handleToggle.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
     }
 
     handleToggle(){
@@ -38,6 +39,10 @@ class ContactDetail extends React.Component{
         this.props.onEdit(this.state.name, this.state.phone);
     }
 
+    handleKeyPress(e){
+        if(e.charCode == 13) this.handleToggle();
+    }
+
     render(){
         const detail = (
             <div>
@@ -51,7 +56,7 @@ class ContactDetail extends React.Component{
                     <input type="text" className="form-control" name="name" placeholder="name..." value={this.state.name} onChange={this.handleChange}/>
                 </div>
                 <div className="form-group">
-                    <input type="text" className="form-control" name="phone" placeholder="phone... XXX-XXXX-XXXX" value={this.state.phone} onChange={this.handleChange}/>
+                    <input type="text" className="form-control" name="phone" placeholder="phone... XXX-XXXX-XXXX" value={this.state.phone} onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
                 </div>
             </div>
         );

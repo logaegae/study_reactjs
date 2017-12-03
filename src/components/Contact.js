@@ -28,16 +28,41 @@ class Contact extends React.Component {
             }]
         };
 
+        this.save = this.state.contactData;
+
         this.handleChange = this.handleChange.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleCreate = this.handleCreate.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+        this.handleClear = this.handleClear.bind(this);
+    }
+
+    componentWillMount(){
+        const contactData = localStorage.contactData;
+        if(contactData){
+            this.setState({
+                contactData : JSON.parse(contactData)
+            });
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if(JSON.stringify(prevState.contactData) != JSON.stringify(this.state.contactData)){
+            localStorage.contactData = JSON.stringify(this.state.contactData);
+        }
     }
 
     handleChange(e){
         this.setState({
             keyword : e.target.value
+        });
+    }
+
+    handleClear(){
+        localStorage.clear();
+        this.setState({
+            contactData : this.save
         });
     }
 
@@ -112,8 +137,14 @@ class Contact extends React.Component {
                 </table>
                 <hr/>
                 <h2>Detail</h2>
-                <ContactDetail isSelected={this.state.selectedKey != -1} contact={this.state.contactData[this.state.selectedKey]} onRemove={this.handleRemove} onEdit={this.handleEdit}/>
-                <ContactCreate onCreate={this.handleCreate} />
+                <ContactDetail
+                    isSelected={this.state.selectedKey != -1}
+                    contact={this.state.contactData[this.state.selectedKey]}
+                    onRemove={this.handleRemove}
+                    onEdit={this.handleEdit}
+                    onStaet={this.state.contactData}
+                />
+                <ContactCreate onCreate={this.handleCreate} onClear={this.handleClear}/>
                 <br/>
             </div>
         );
