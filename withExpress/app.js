@@ -1,25 +1,24 @@
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
+const user = require('./routes/user');
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
 
-app.get('/', function(req, res){
-    res.send('Hello World');
-});
+// const myLogger = (req, res, next) => {
+//     console.log(req.url);
+//     next();
+// }
 
-app.get('/user/:id', function(req, res) {
-    res.send('Received a GET request, param:' + req.params.id);
-});
+// app.get('/', function(req, res){
+//     res.send('Hello World');
+// });
 
-app.post('/user', function(req, res) {
-    res.json({ success: true })
-});
-
-app.put('/user', function(req, res) {
-    res.status(400).json({ message: 'Hey, you. Bad Request!' });
-});
-
-app.delete('/user', function(req, res) {
-    res.send('Received a DELETE request');
-});
+// app.use(myLogger);
+// npm repo morgan
+app.use(morgan('dev'));
+app.use(bodyParser.json());
+app.use('/',express.static('public'));
+app.use('/user',user);
 
 app.listen(3000, function(){
     console.log('server is listening on port 3000');
